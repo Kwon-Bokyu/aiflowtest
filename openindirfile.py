@@ -13,14 +13,9 @@ def to_open_file(in_dir: str , out_dir: str, paramjson: dict = None, stoplist: l
         for i in stoplist:
             indir_file.remove(i)
         
-    #wantlist = ["a.csv", "b.csv"]
     document = []
     for i, file_name in enumerate(indir_file):
         to_do_logic(in_dir=in_dir, out_dir=out_dir, indir_file=file_name)
-        # if i == 0:
-        #     document = pd.read_csv(f'{in_dir}{os.sep}{file_name}')
-        # else:
-        #     document.append(pd.read_csv(f'{in_dir}{os.sep}{file_name}'))
         
 
 
@@ -37,16 +32,25 @@ def to_do_logic(in_dir: str , out_dir: str, indir_file: str, paramjson: dict = N
     
     abc = abc_re.ABC_BY_HO(grouped[['PRODUCTCODE', 'total_sales']])
     
+    plt.figure(1)
     sns.countplot(x = 'Category', data = abc).set(title = 'No. of A, B, and C Cat. Items for All Countries')
+    plt.savefig(f'{out_dir}{os.sep}No. of A, B, and C Cat. Items for All Countries.png')
+    
+    plt.figure(2)
     sns.barplot(x = 'Category', y = 'total_sales', data = abc).set(title = 'Avg. Value of A, B, and C Cat. Items for All Countries')
-    plt.savefig(f'{out_dir}/Avg. Value of A, B, and C Cat. Items for All Countries.png')
+    plt.savefig(f'{out_dir}{os.sep}Avg. Value of A, B, and C Cat. Items for All Countries.png')
     
     mc_abc = abc_re.productmix(grouped['PRODUCTCODE'], grouped['total_sales'], grouped['total_revenue'])
-    
+
+    plt.figure(3)
     sns.countplot(x = 'product_mix', data = mc_abc).set(title = 'No. of A_A to C_C Cat. Items for All Countries')
     plt.savefig(f'{out_dir}{os.sep}No. of A_A to C_C Cat. Items for All Countries.png')
+
+    plt.figure(4)
     sns.barplot(x = 'product_mix', y = 'sales', data = mc_abc).set(title = 'Avg. Value of A_A to C_C Cat. Items for All Countries')
-    plt.savefig(f'{out_dir}{os.sep}Avg. Value of A, B, and C Cat. Items for All Countries.png')
+    plt.savefig(f'{out_dir}{os.sep}Avg. Value of A_A to C_C Cat. Items for All Countries.png')
+
+    plt.figure(5)
     sns.barplot(x = 'product_mix', y = 'revenue', data = mc_abc).set(title = 'Total Revenue of A_A to C_C Cat. Items for All Countries')
     plt.savefig(f'{out_dir}{os.sep}Total Revenue of A_A to C_C Cat. Items for All Countries.png')
     
@@ -57,4 +61,4 @@ def to_do_logic(in_dir: str , out_dir: str, indir_file: str, paramjson: dict = N
     abc.to_csv(f'{out_dir}/abc_single.csv', index = False, header=True)
     mc_abc.to_csv(f'{out_dir}/abc_multi.csv', index = False, header=True)
     
-    return None
+    return None, None, {}, ["abc_multi.csv", "abc_single.csv", "No. of A, B, and C Cat. Items for All Countries", 'Avg. Value of A, B, and C Cat. Items for All Countries.png',"Avg. Value of A_A to C_C Cat. Items for All Countries.png", "No. of A_A to C_C Cat. Items for All Countries.png", "Total Revenue of A_A to C_C Cat. Items for All Countries.png"]
